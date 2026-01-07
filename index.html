@@ -102,7 +102,7 @@
             margin-bottom: 40px;
         }
 
-        .what-is-ai {
+        .responsible-use-of-ai {
             background: linear-gradient(135deg, #FFD93D 0%, #FFA500 100%);
             padding: 30px;
             border-radius: 25px;
@@ -112,18 +112,47 @@
             transition: all 0.3s;
         }
 
-        .what-is-ai:hover {
+        .responsible-use-of-ai:hover {
             transform: translateY(-5px);
             box-shadow: 0 12px 30px rgba(255,165,0,0.4);
         }
 
-        .what-is-ai h2 {
+        .responsible-use-of-ai h2 {
             font-size: 2.5em;
             color: white;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
             display: flex;
             align-items: center;
             gap: 15px;
+        }
+
+        .ai-intro-layout {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            margin-top: 20px;
+        }
+        
+        .ai-text {
+            flex: 1;
+            text-align: left;
+            font-size: 1.3em;
+            line-height: 1.6;
+            color: #fff;
+        }
+        
+        .ai-video {
+            flex: 1;
+            display: flex;
+            justify-content: flex-end;
+        }
+        
+        .ai-video iframe {
+            width: 100%;
+            max-width: 420px;
+            aspect-ratio: 16 / 9;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.25);
         }
 
         .section-title {
@@ -433,6 +462,18 @@
                 position: static;
                 margin-top: 15px;
             }
+            
+            .ai-intro-layout {
+                flex-direction: column;
+            }
+            
+            .ai-video {
+                justify-content: center;
+            }
+            
+            .ai-text {
+                text-align: left;
+            }
         }
     </style>
 </head>
@@ -454,8 +495,29 @@
         <!-- Home Screen -->
         <div id="home" class="content active">
             <div class="home-section">
-                <div class="what-is-ai" onclick="showWhatIsAI()">
-                    <h2>🤖 What is AI?</h2>
+                <div class="responsible-use-of-ai">
+                    <h2>🤖 Responsible use of AI</h2>
+                
+                    <div class="ai-intro-layout">
+                        <div class="ai-text">
+                            <p>
+                                AI is like a super smart computer helper that can learn from information and help us with many tasks!
+                                AI can answer questions, create pictures, help with homework, and much more.
+                                But just like any tool, we need to learn how to use it safely and smartly.
+                                That's what AI Glitch Buster is all about - helping you become an expert at using AI the right way! 🌟
+                            </p>
+                        </div>
+                
+                        <div class="ai-video">
+                            <iframe
+                                src="https://www.youtube.com/embed/19xCdZWXsR0?si=FIWOKKfI6HeOWjBx"
+                                title="YouTube video player"
+                                frameborder="0"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                allowfullscreen>
+                            </iframe>
+                        </div>
+                    </div>
                 </div>
 
                 <h2 class="section-title">AI Safety Topics</h2>
@@ -481,7 +543,7 @@
         </div>
 
         <!-- What is AI Screen -->
-        <div id="what-is-ai" class="content">
+        <div id="responsible-use-of-ai" class="content">
             <button class="back-home-btn" onclick="goHome()">🏠 Home</button>
             <div class="topic-header">
                 <h2>🤖 What is AI?</h2>
@@ -2962,7 +3024,7 @@
 
         function showWhatIsAI() {
             hideAllContent();
-            document.getElementById('what-is-ai').classList.add('active');
+            document.getElementById('responsible-use-of-ai').classList.add('active');
         }
 
         function showTopic(topic) {
