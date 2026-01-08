@@ -490,6 +490,56 @@
                     <span class="badge" id="badge-privacy">🔒</span>
                 </div>
             </div>
+            <button class="feedback-btn"
+                onclick="window.open('https://forms.gle/QKqgqCLw7ShGPf137', '_blank')">
+                💬 Give Feedback
+            </button>
+
+            <style>
+                .feedback-btn {
+                    background: linear-gradient(
+                        270deg,
+                        #ff0000,
+                        #ff7a00,
+                        #ffeb00,
+                        #00ff6a,
+                        #00c3ff,
+                        #7a00ff,
+                        #ff00c8
+                    );
+                    background-size: 400% 400%;
+                    animation: rainbowMove 6s ease infinite;
+
+                    color: #000000; /* black text */
+                    border: none;
+                    padding: 14px 22px;
+                    font-size: 16px;
+                    font-weight: 700;
+                    border-radius: 10px;
+                    cursor: pointer;
+
+                    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.25);
+                    transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+                    /* improves readability */
+                    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.6);
+                }
+
+                .feedback-btn:hover {
+                    transform: translateY(-2px);
+                    box-shadow: 0 10px 22px rgba(0, 0, 0, 0.35);
+                }
+
+                .feedback-btn:active {
+                    transform: scale(0.97);
+                }
+
+                @keyframes rainbowMove {
+                    0% { background-position: 0% 50%; }
+                    50% { background-position: 100% 50%; }
+                    100% { background-position: 0% 50%; }
+                }
+            </style>
         </div>
 
         <!-- Home Screen -->
