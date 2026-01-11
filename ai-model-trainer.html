@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Text Classifier</title>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.11.0/dist/tf.min.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>@keyframes spin{to{transform:rotate(360deg)}}.animate-spin{animation:spin 1s linear infinite}
+    .bg-ai{background:linear-gradient(135deg,#667eea 0%,#764ba2 50%,#f093fb 100%)}
+    .bg-snowy{background:linear-gradient(135deg,#e0f7fa 0%,#b3e5fc 50%,#81d4fa 100%)}
+    .bg-sunny{background:linear-gradient(135deg,#fff9c4 0%,#ffeb3b 50%,#ffc107 100%)}
+    .bg-fall{background:linear-gradient(135deg,#ffccbc 0%,#ff7043 50%,#d84315 100%)}
+    .bg-gaming{background:linear-gradient(135deg,#1a237e 0%,#283593 25%,#00bcd4 50%,#e91e63 75%,#ff5722 100%)}
+    .bg-animals{background:linear-gradient(135deg,#c8e6c9 0%,#81c784 33%,#66bb6a 66%,#4caf50 100%)}
+  </style>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-purple-400 via-pink-400 to-red-400" id="mainBody">
+  
+  <!-- Auth Screen -->
+  <div id="authScreen" class="min-h-screen flex items-center justify-center p-6">
+    <div class="max-w-md w-full">
+      <div class="text-center mb-8">
+        <h1 class="text-4xl font-bold mb-2">🤖 AI Text Classifier</h1>
+        <p class="text-gray-600">Train custom AI models</p>
+      </div>
+      <div class="bg-white rounded-lg shadow-lg p-8">
+        <div id="signInForm">
+          <h2 class="text-2xl font-bold mb-6">Sign In</h2>
+          <input id="signInEmail" type="email" placeholder="Email" class="w-full px-3 py-2 border rounded-lg mb-4 focus:ring-2 focus:ring-indigo-500" />
+          <input id="signInPassword" type="password" placeholder="Password" class="w-full px-3 py-2 border rounded-lg mb-4 focus:ring-2 focus:ring-indigo-500" />
+          <button onclick="signIn()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-lg font-medium mb-4">Sign In</button>
+          <p class="text-center text-sm">Don't have an account? <button onclick="showSignUp()" class="text-indigo-600 font-semibold">Sign Up</button></p>
+        </div>
+        <div id="signUpForm" class="hidden">
+          <h2 class="text-2xl font-bold mb-6">Create Account</h2>
+          <input id="signUpName" type="text" placeholder="Name" class="w-full px-3 py-2 border rounded-lg mb-4 focus:ring-2 focus:ring-indigo-500" />
+          <input id="signUpEmail" type="email" placeholder="Email" class="w-full px-3 py-2 border rounded-lg mb-4 focus:ring-2 focus:ring-indigo-500" />
+          <input id="signUpPassword" type="password" placeholder="Password" class="w-full px-3 py-2 border rounded-lg mb-4 focus:ring-2 focus:ring-indigo-500" />
+          <button onclick="signUp()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-lg font-medium mb-4">Create Account</button>
+          <p class="text-center text-sm">Already have an account? <button onclick="showSignIn()" class="text-indigo-600 font-semibold">Sign In</button></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main App -->
+  <div id="mainApp" class="hidden">
+    <div class="bg-white border-b px-6 py-4">
+      <div class="max-w-7xl mx-auto flex justify-between items-center">
+        <div><h1 class="text-xl font-bold">AI Text Classifier</h1><p class="text-sm text-gray-600">Welcome, <span id="userName"></span>!</p></div>
+        <div class="flex items-center gap-3">
+          <button onclick="toggleThemeMenu()" class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700">🎨 Theme</button>
+          <button onclick="signOut()" class="text-gray-600 hover:text-gray-900">Sign Out</button>
+        </div>
+      </div>
+      <div id="themeMenu" class="hidden absolute right-6 top-16 bg-white rounded-lg shadow-lg border p-4 z-50">
+        <p class="font-semibold text-gray-900 mb-3">Choose Background</p>
+        <div class="space-y-2">
+          <button onclick="changeTheme('ai')" class="w-full text-left px-3 py-2 rounded hover:bg-gray-100">🤖 AI</button>
+          <button onclick="changeTheme('snowy')" class="w-full text-left px-3 py-2 rounded hover:bg-gray-100">❄️ Snowy</button>
+          <button onclick="changeTheme('sunny')" class="w-full text-left px-3 py-2 rounded hover:bg-gray-100">☀️ Sunny</button>
+          <button onclick="changeTheme('fall')" class="w-full text-left px-3 py-2 rounded hover:bg-gray-100">🍂 Fall</button>
+          <button onclick="changeTheme('gaming')" class="w-full text-left px-3 py-2 rounded hover:bg-gray-100">🎮 Gaming</button>
+          <button onclick="changeTheme('animals')" class="w-full text-left px-3 py-2 rounded hover:bg-gray-100">🦁 Animals</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Projects View -->
+    <div id="projectsView" class="p-6">
+      <div class="max-w-7xl mx-auto">
+        <div class="flex justify-between mb-6">
+          <h2 class="text-2xl font-bold">My Projects</h2>
+          <button onclick="createNewProject()" class="bg-indigo-600 text-white px-6 py-3 rounded-lg font-medium">+ New Project</button>
+        </div>
+        <div id="projectsList" class="grid md:grid-cols-3 gap-6"></div>
+        <div id="noProjects" class="text-center py-12 hidden">
+          <h3 class="text-lg font-semibold mb-2">No projects yet</h3>
+          <button onclick="createNewProject()" class="bg-indigo-600 text-white px-6 py-3 rounded-lg mt-4">Create Project</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Project Editor - All tabs and functionality from version 13 -->
+    <div id="projectEditor" class="hidden p-6">
+      <div class="max-w-4xl mx-auto">
+        <div class="flex justify-between mb-6">
+          <button onclick="backToProjects()" class="text-gray-600">← Back</button>
+          <button onclick="saveCurrentProject()" class="bg-green-600 text-white px-6 py-3 rounded-lg">Save Project</button>
+        </div>
+        <div class="mb-6 bg-white p-6 rounded-lg border">
+          <input id="projectNameInput" type="text" placeholder="Project Name" class="w-full text-xl px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500" />
+        </div>
+        <div class="flex gap-2 mb-6">
+          <button onclick="showTab('setup')" id="tabSetup" class="px-6 py-3 bg-white border-b-2 border-indigo-600 font-semibold text-indigo-600 rounded-t-lg">1. Classes</button>
+          <button onclick="showTab('train')" id="tabTrain" class="px-6 py-3 bg-white border-b-2 border-gray-200 font-semibold text-gray-500 rounded-t-lg">2. Examples</button>
+          <button onclick="showTab('model')" id="tabModel" class="px-6 py-3 bg-white border-b-2 border-gray-200 font-semibold text-gray-500 rounded-t-lg">3. Train</button>
+          <button onclick="showTab('classify')" id="tabClassify" class="px-6 py-3 bg-white border-b-2 border-gray-200 font-semibold text-gray-500 rounded-t-lg">4. Classify</button>
+        </div>
+        <div id="setupTab" class="bg-white p-6 rounded-lg">
+          <h2 class="text-xl font-bold mb-4">Define Classes</h2>
+          <div class="flex gap-2 mb-4">
+            <input id="newClass" type="text" placeholder="Class name..." class="flex-1 px-3 py-2 border rounded-lg" />
+            <button onclick="addClass()" class="bg-indigo-600 text-white px-6 py-2 rounded-lg">Add</button>
+          </div>
+          <div id="classesList"></div>
+        </div>
+        <div id="trainTab" class="hidden bg-white p-6 rounded-lg">
+          <h2 class="text-xl font-bold mb-4">Add Examples</h2>
+          <select id="exampleClass" class="w-full px-3 py-2 border rounded-lg mb-4"><option value="">Select class</option></select>
+          <textarea id="exampleText" rows="3" placeholder="Example text..." class="w-full px-3 py-2 border rounded-lg mb-4"></textarea>
+          <button onclick="addExample()" class="w-full bg-indigo-600 text-white py-3 rounded-lg">Add Example</button>
+          <div id="examplesCount" class="mt-4 p-4 bg-indigo-50 rounded-lg"></div>
+        </div>
+        <div id="modelTab" class="hidden bg-white p-6 rounded-lg">
+          <h2 class="text-xl font-bold mb-4">Train Model</h2>
+          <div id="trainingStatus" class="mb-4"></div>
+          <button onclick="trainModel()" id="trainBtn" class="w-full bg-indigo-600 text-white py-3 rounded-lg">Train</button>
+          <div id="exportSection" class="hidden mt-4 p-4 bg-green-50 rounded-lg">
+            <button onclick="downloadModel()" class="w-full bg-green-600 text-white py-2 rounded-lg mb-2">Download Model</button>
+            <button onclick="downloadConfig()" class="w-full bg-indigo-600 text-white py-2 rounded-lg">Download Config</button>
+          </div>
+        </div>
+        <div id="classifyTab" class="hidden">
+          <div class="bg-white p-6 rounded-lg mb-6">
+            <textarea id="inputText" rows="6" placeholder="Enter text..." class="w-full px-3 py-2 border rounded-lg mb-4"></textarea>
+            <div class="flex justify-between text-sm text-gray-500 mb-4">
+              <span id="modelStatus">Not trained</span>
+              <span id="charCount">0 chars</span>
+            </div>
+            <button id="classifyBtn" onclick="handleClassify()" disabled class="w-full bg-indigo-600 text-white py-3 rounded-lg disabled:bg-gray-400">Classify</button>
+          </div>
+          <div id="resultsCard" class="hidden bg-indigo-50 p-6 rounded-lg border-2 border-indigo-200">
+            <h2 class="text-xl font-bold mb-4">Results</h2>
+            <div class="bg-white p-4 rounded-lg mb-4">
+              <div class="flex justify-between mb-2"><span class="text-sm">Predicted:</span><span id="topLabel" class="bg-indigo-600 text-white px-4 py-1 rounded-full font-semibold">-</span></div>
+              <div id="topConfidence" class="text-2xl font-bold text-indigo-900">0%</div>
+            </div>
+            <div id="probabilitiesList" class="space-y-3 mb-4"></div>
+            <div class="bg-white p-4 rounded-lg">
+              <h4 class="font-semibold mb-3">Correct?</h4>
+              <div class="flex gap-2 mb-3">
+                <button onclick="markCorrect()" class="flex-1 bg-green-600 text-white py-2 rounded-lg">✓ Correct</button>
+                <button onclick="markWrong()" class="flex-1 bg-red-600 text-white py-2 rounded-lg">✗ Wrong</button>
+              </div>
+              <div id="feedbackMessage"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tensorflow/4.11.0/tf.min.js"></script>
+  <script>
+    let currentUser=null,users=JSON.parse(localStorage.getItem('users')||'{}'),projects=JSON.parse(localStorage.getItem('projects')||'{}'),currentProjectId=null,classes=[],trainingData={},model=null,vocabulary={},maxSequenceLength=50,currentPrediction=null,currentText='';
+    
+    function showSignIn(){document.getElementById('signInForm').classList.remove('hidden');document.getElementById('signUpForm').classList.add('hidden')}
+    function showSignUp(){document.getElementById('signUpForm').classList.remove('hidden');document.getElementById('signInForm').classList.add('hidden')}
+    
+    function signUp(){const name=document.getElementById('signUpName').value.trim(),email=document.getElementById('signUpEmail').value.trim(),password=document.getElementById('signUpPassword').value;if(!name||!email||!password)return alert('Fill all fields');if(users[email])return alert('Email exists');users[email]={name,email,password};localStorage.setItem('users',JSON.stringify(users));currentUser=users[email];showMainApp()}
+    
+    function signIn(){const email=document.getElementById('signInEmail').value.trim(),password=document.getElementById('signInPassword').value;if(!users[email]||users[email].password!==password)return alert('Invalid credentials');currentUser=users[email];showMainApp()}
+    
+    function signOut(){currentUser=null;document.getElementById('mainApp').classList.add('hidden');document.getElementById('authScreen').classList.remove('hidden');showSignIn()}
+    
+    function showMainApp(){document.getElementById('authScreen').classList.add('hidden');document.getElementById('mainApp').classList.remove('hidden');document.getElementById('userName').textContent=currentUser.name;loadProjects()}
+    
+    function loadProjects(){const userProjects=Object.values(projects).filter(p=>p.userId===currentUser.email),list=document.getElementById('projectsList'),none=document.getElementById('noProjects');if(userProjects.length===0){none.classList.remove('hidden');list.innerHTML='';return}none.classList.add('hidden');list.innerHTML=userProjects.map(p=>`<div class="bg-white p-6 rounded-lg shadow"><h3 class="font-bold mb-2">${p.name}</h3><p class="text-sm text-gray-600 mb-4">${p.classes.length} classes • ${Object.values(p.trainingData).reduce((sum,arr)=>sum+arr.length,0)} examples</p><div class="flex gap-2"><button onclick="openProject('${p.id}')" class="flex-1 bg-indigo-600 text-white py-2 rounded-lg">Open</button><button onclick="deleteProject('${p.id}')" class="bg-red-600 text-white py-2 rounded-lg">Delete</button></div></div>`).join('')}
+    
+    function createNewProject(){const id=Date.now().toString();projects[id]={id,userId:currentUser.email,name:'Untitled Project',classes:[],trainingData:{},trained:false};localStorage.setItem('projects',JSON.stringify(projects));openProject(id)}
+    
+    async function openProject(id){currentProjectId=id;const p=projects[id];classes=[...p.classes];trainingData=JSON.parse(JSON.stringify(p.trainingData));model=null;vocabulary={};document.getElementById('projectsView').classList.add('hidden');document.getElementById('projectEditor').classList.remove('hidden');document.getElementById('projectNameInput').value=p.name;updateClassesList();updateExampleClassSelect();updateExamplesCount();showTab('setup');if(p.modelTrained&&p.modelWeights&&p.vocabularyData){vocabulary=p.vocabularyData;model=tf.sequential({layers:[tf.layers.embedding({inputDim:Object.keys(vocabulary).length+1,outputDim:32,inputLength:maxSequenceLength}),tf.layers.globalAveragePooling1d(),tf.layers.dense({units:64,activation:'relu'}),tf.layers.dropout({rate:0.3}),tf.layers.dense({units:32,activation:'relu'}),tf.layers.dropout({rate:0.3}),tf.layers.dense({units:classes.length,activation:'softmax'})]});model.compile({optimizer:tf.train.adam(0.001),loss:'categoricalCrossentropy',metrics:['accuracy']});const weights=p.modelWeights.map(w=>tf.tensor(w));model.setWeights(weights);const statusDiv=document.getElementById('trainingStatus');statusDiv.innerHTML='<div class="p-4 bg-green-50 rounded-lg border-2 border-green-200"><div class="font-bold text-green-900 mb-2">✓ Model Loaded!</div><p class="text-sm">This project is already trained and ready to use</p></div>';document.getElementById('modelStatus').textContent='✓ Ready';document.getElementById('classifyBtn').disabled=false;document.getElementById('exportSection').classList.remove('hidden')}}
+    
+    function deleteProject(id){if(!confirm('Delete?'))return;delete projects[id];localStorage.setItem('projects',JSON.stringify(projects));loadProjects()}
+    
+    function backToProjects(){document.getElementById('projectEditor').classList.add('hidden');document.getElementById('projectsView').classList.remove('hidden');currentProjectId=null;model=null;loadProjects()}
+    
+    function saveCurrentProject(){if(!currentProjectId)return;const name=document.getElementById('projectNameInput').value.trim()||'Untitled';projects[currentProjectId].name=name;projects[currentProjectId].classes=[...classes];projects[currentProjectId].trainingData=JSON.parse(JSON.stringify(trainingData));if(model){const modelWeights=model.getWeights().map(w=>Array.from(w.dataSync()));projects[currentProjectId].modelWeights=modelWeights;projects[currentProjectId].vocabularyData=vocabulary;projects[currentProjectId].modelTrained=true;projects[currentProjectId].trained=true}else{projects[currentProjectId].modelWeights=null;projects[currentProjectId].vocabularyData=null;projects[currentProjectId].modelTrained=false;projects[currentProjectId].trained=false}localStorage.setItem('projects',JSON.stringify(projects));alert('Saved!')}
+    
+    function showTab(tab){['setup','train','model','classify'].forEach(t=>{document.getElementById(t+'Tab').classList.add('hidden');const btn=document.getElementById('tab'+t.charAt(0).toUpperCase()+t.slice(1));btn.classList.remove('border-indigo-600','text-indigo-600');btn.classList.add('border-gray-200','text-gray-500')});document.getElementById(tab+'Tab').classList.remove('hidden');const activeBtn=document.getElementById('tab'+tab.charAt(0).toUpperCase()+tab.slice(1));activeBtn.classList.add('border-indigo-600','text-indigo-600');activeBtn.classList.remove('border-gray-200','text-gray-500')}
+    
+    function addClass(){const input=document.getElementById('newClass'),className=input.value.trim();if(!className)return alert('Enter name');if(classes.includes(className))return alert('Exists');classes.push(className);trainingData[className]=[];input.value='';updateClassesList();updateExampleClassSelect()}
+    
+    function removeClass(className){if(!confirm(`Delete class "${className}" and all its examples?`))return;classes=classes.filter(c=>c!==className);delete trainingData[className];if(model){model.dispose();model=null;document.getElementById('modelStatus').textContent='Model not trained yet';document.getElementById('classifyBtn').disabled=true;document.getElementById('exportSection').classList.add('hidden');document.getElementById('trainingStatus').innerHTML='<div class="p-4 bg-yellow-50 rounded-lg border-2 border-yellow-300"><div class="font-bold text-yellow-900 mb-2">⚠️ Model Reset</div><p class="text-sm">A class was deleted. Please retrain the model.</p></div>'}updateClassesList();updateExampleClassSelect();updateExamplesCount()}
+    
+    function updateClassesList(){const list=document.getElementById('classesList');if(classes.length===0){list.innerHTML='<p class="text-gray-500 text-center py-4">No classes</p>';return}list.innerHTML=classes.map(cls=>`<div class="flex justify-between p-3 bg-indigo-50 rounded-lg mb-2"><span>${cls}</span><button onclick="removeClass('${cls}')" class="text-red-600">Delete</button></div>`).join('')}
+    
+    function updateExampleClassSelect(){document.getElementById('exampleClass').innerHTML='<option value="">Select class</option>'+classes.map(cls=>`<option value="${cls}">${cls}</option>`).join('')}
+    
+    function addExample(){const className=document.getElementById('exampleClass').value,text=document.getElementById('exampleText').value.trim();if(!className)return alert('Select class');if(!text)return alert('Enter text');trainingData[className].push(text);document.getElementById('exampleText').value='';updateExamplesCount();alert('Added!')}
+    
+    function updateExamplesCount(){const countDiv=document.getElementById('examplesCount'),total=Object.values(trainingData).reduce((sum,arr)=>sum+arr.length,0);if(total===0){countDiv.innerHTML='<p>No examples</p>';return}countDiv.innerHTML=`<h3 class="font-bold mb-2">Examples: ${total}</h3>`+classes.map(cls=>`<div class="flex justify-between text-sm"><span>${cls}:</span><span class="font-semibold text-indigo-600">${trainingData[cls].length} examples</span></div>`).join('')}
+    
+    function tokenize(text){return text.toLowerCase().replace(/[^\w\s]/g,'').split(/\s+/).filter(word=>word.length>0)}
+    function buildVocabulary(){const allTexts=Object.values(trainingData).flat(),words=new Set();allTexts.forEach(text=>tokenize(text).forEach(word=>words.add(word)));vocabulary={};Array.from(words).forEach((word,idx)=>vocabulary[word]=idx+1)}
+    function textToSequence(text){const tokens=tokenize(text),sequence=tokens.map(token=>vocabulary[token]||0);if(sequence.length<maxSequenceLength)return[...sequence,...Array(maxSequenceLength-sequence.length).fill(0)];return sequence.slice(0,maxSequenceLength)}
+    
+    async function trainModel(){if(classes.length<2)return alert('Need 2+ classes');const minExamples=Math.min(...Object.values(trainingData).map(arr=>arr.length));if(minExamples<1)return alert('Need at least 1 example per class');const btn=document.getElementById('trainBtn');btn.disabled=true;btn.textContent='Training...';const statusDiv=document.getElementById('trainingStatus');statusDiv.innerHTML='<div class="p-4 bg-blue-50 rounded-lg">Building vocabulary...</div>';await new Promise(resolve=>setTimeout(resolve,500));buildVocabulary();statusDiv.innerHTML='<div class="p-4 bg-blue-50 rounded-lg">Preparing data...</div>';await new Promise(resolve=>setTimeout(resolve,500));const xs=[],ys=[];classes.forEach((className,classIdx)=>{trainingData[className].forEach(text=>{xs.push(textToSequence(text));const label=Array(classes.length).fill(0);label[classIdx]=1;ys.push(label)})});statusDiv.innerHTML='<div class="p-4 bg-blue-50 rounded-lg">Training...</div>';await new Promise(resolve=>setTimeout(resolve,500));model=tf.sequential({layers:[tf.layers.embedding({inputDim:Object.keys(vocabulary).length+1,outputDim:32,inputLength:maxSequenceLength}),tf.layers.globalAveragePooling1d(),tf.layers.dense({units:64,activation:'relu'}),tf.layers.dropout({rate:0.3}),tf.layers.dense({units:32,activation:'relu'}),tf.layers.dropout({rate:0.3}),tf.layers.dense({units:classes.length,activation:'softmax'})]});model.compile({optimizer:tf.train.adam(0.001),loss:'categoricalCrossentropy',metrics:['accuracy']});const xsTensor=tf.tensor2d(xs),ysTensor=tf.tensor2d(ys);await model.fit(xsTensor,ysTensor,{epochs:50,batchSize:4,validationSplit:0.2,shuffle:true,callbacks:{onEpochEnd:(epoch,logs)=>{statusDiv.innerHTML=`<div class="p-4 bg-blue-50 rounded-lg"><div class="font-bold">Epoch ${epoch+1}/50</div><div class="text-sm">Accuracy: ${(logs.acc*100).toFixed(1)}%</div></div>`}}});xsTensor.dispose();ysTensor.dispose();const modelWeights=model.getWeights().map(w=>Array.from(w.dataSync()));projects[currentProjectId].modelWeights=modelWeights;projects[currentProjectId].vocabularyData=vocabulary;projects[currentProjectId].modelTrained=true;projects[currentProjectId].trained=true;localStorage.setItem('projects',JSON.stringify(projects));statusDiv.innerHTML='<div class="p-4 bg-green-50 rounded-lg border-2 border-green-200"><div class="font-bold text-green-900 mb-2">✓ Trained!</div><p class="text-sm">Ready to classify</p></div>';document.getElementById('modelStatus').textContent='✓ Ready';document.getElementById('classifyBtn').disabled=false;document.getElementById('exportSection').classList.remove('hidden');btn.disabled=false;btn.textContent='Train Model'}
+    
+    document.getElementById('inputText').addEventListener('input',()=>document.getElementById('charCount').textContent=document.getElementById('inputText').value.length+' chars');
+    
+    async function handleClassify(){const text=document.getElementById('inputText').value.trim();if(!text)return alert('Enter text');if(!model)return alert('Train first');currentText=text;const classifyBtn=document.getElementById('classifyBtn');classifyBtn.disabled=true;classifyBtn.textContent='Classifying...';document.getElementById('resultsCard').classList.add('hidden');document.getElementById('feedbackMessage').innerHTML='';await new Promise(resolve=>setTimeout(resolve,500));const sequence=textToSequence(text),inputTensor=tf.tensor2d([sequence]),prediction=model.predict(inputTensor),probabilities=await prediction.data(),results=classes.map((label,idx)=>({label,confidence:probabilities[idx]}));results.sort((a,b)=>b.confidence-a.confidence);currentPrediction=results;inputTensor.dispose();prediction.dispose();displayResults(results);classifyBtn.disabled=false;classifyBtn.textContent='Classify Text'}
+    
+    function displayResults(results){document.getElementById('topLabel').textContent=results[0].label;document.getElementById('topConfidence').textContent=`${(results[0].confidence*100).toFixed(1)}% confident`;const list=document.getElementById('probabilitiesList');list.innerHTML='';results.forEach(item=>{const div=document.createElement('div');div.innerHTML=`<div class="flex justify-between text-sm mb-1"><span class="font-medium">${item.label}</span><span>${(item.confidence*100).toFixed(1)}%</span></div><div class="w-full bg-gray-200 rounded-full h-2"><div class="bg-gradient-to-r from-indigo-600 to-purple-600 h-2 rounded-full" style="width:${item.confidence*100}%"></div></div>`;list.appendChild(div)});document.getElementById('resultsCard').classList.remove('hidden')}
+    
+    function markCorrect(){document.getElementById('feedbackMessage').innerHTML='<div class="p-3 bg-green-50 rounded-lg border border-green-300 text-green-900"><strong>✓ Correct!</strong><p class="text-sm">Identified as '+currentPrediction[0].label+'</p></div>'}
+    
+    function markWrong(){const wrongClassesHtml=classes.filter(c=>c!==currentPrediction[0].label).map(c=>`<option value="${c}">${c}</option>`).join('');document.getElementById('feedbackMessage').innerHTML=`<div class="p-3 bg-yellow-50 rounded-lg border border-yellow-300"><p class="font-semibold text-yellow-900 mb-2">What should it be?</p><select id="correctClassSelect" class="w-full px-3 py-2 border rounded-lg mb-2"><option value="">Select correct class</option>${wrongClassesHtml}</select><button onclick="showExplanation()" class="w-full bg-yellow-600 text-white py-2 rounded-lg">Show Why Wrong</button></div>`}
+    
+    function showExplanation(){const correctClass=document.getElementById('correctClassSelect').value;if(!correctClass)return alert('Select correct class');const predictedClass=currentPrediction[0].label,predictedConfidence=(currentPrediction[0].confidence*100).toFixed(1),correctConfidence=(currentPrediction.find(p=>p.label===correctClass)?.confidence*100||0).toFixed(1),tokens=tokenize(currentText),knownWords=tokens.filter(t=>vocabulary[t]),unknownWords=tokens.filter(t=>!vocabulary[t]);let explanation='';if(unknownWords.length>tokens.length*0.5)explanation=`Text contains ${unknownWords.length}/${tokens.length} unknown words`;else if(predictedConfidence<60)explanation=`Model was uncertain (${predictedConfidence}% confident)`;else explanation=`Found patterns similar to "${predictedClass}"`;document.getElementById('feedbackMessage').innerHTML=`<div class="p-3 bg-red-50 rounded-lg border border-red-300"><p class="font-bold text-red-900 mb-2">Why Wrong:</p><div class="space-y-2 text-sm"><div class="p-2 bg-white rounded"><p>❌ Predicted: <strong>${predictedClass}</strong> (${predictedConfidence}%)</p><p>✓ Correct: <strong>${correctClass}</strong> (${correctConfidence}%)</p></div><div class="p-2 bg-white rounded"><p class="font-semibold mb-1">Explanation:</p><p>${explanation}</p></div><div class="p-2 bg-white rounded"><p>Known words: ${knownWords.length}</p><p>Unknown: ${unknownWords.length}</p></div><div class="p-2 bg-blue-50 rounded"><p class="font-semibold">💡 Tip:</p><p class="text-xs">Add more "${correctClass}" examples</p></div></div></div>`}
+    
+    async function downloadModel(){if(!model)return alert('Train first');await model.save('downloads://text-classifier-model');alert('Model downloaded!')}
+
+    
+    const savedEmail=localStorage.getItem('currentUser');if(savedEmail&&users[savedEmail]){currentUser=users[savedEmail];showMainApp()}
+    
+    function toggleThemeMenu(){document.getElementById('themeMenu').classList.toggle('hidden')}
+    
+    function changeTheme(theme){const body=document.getElementById('mainBody');body.className='min-h-screen bg-'+theme;localStorage.setItem('userTheme',theme);document.getElementById('themeMenu').classList.add('hidden')}
+    
+    const savedTheme=localStorage.getItem('userTheme');if(savedTheme){document.getElementById('mainBody').className='min-h-screen bg-'+savedTheme}
+    
+    document.addEventListener('click',(e)=>{const menu=document.getElementById('themeMenu');if(menu&&!menu.contains(e.target)&&!e.target.closest('button[onclick="toggleThemeMenu()"]')){menu.classList.add('hidden')}})
+  </script>
+</body>
+</html>
