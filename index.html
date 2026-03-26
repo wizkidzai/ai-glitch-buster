@@ -267,6 +267,14 @@
             box-shadow: 0 12px 30px rgba(102,126,234,0.4);
         }
 
+        .video-card iframe {
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            border-radius: 15px;
+            border: none;
+            margin-bottom: 10px;
+        }
+
         .video-card h4 {
             font-size: 1.5em;
             margin-bottom: 10px;
@@ -563,7 +571,7 @@
                 
                         <div class="ai-video">
                             <iframe
-                                src="https://www.youtube.com/embed/19xCdZWXsR0?si=FIWOKKfI6HeOWjBx"
+                                src="https://www.youtube.com/embed/19xCdZWXsR0?enablejsapi=1&si=FIWOKKfI6HeOWjBx"
                                 title="YouTube video player"
                                 frameborder="0"
                                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
@@ -3064,6 +3072,7 @@
         let currentQuestionIndex = 0;
         let score = 0;
         let selectedAnswer = null;
+        let shuffledCorrectIndex = null;
         let badges = JSON.parse(localStorage.getItem('badges') || '{}');
 
         // Load badges on startup
@@ -3095,17 +3104,17 @@
                     <div class="video-section">
                         <div class="video-card" id="hallucination-video-1">
                             <h4>▶️ Aanya's Take</h4>
-                            <iframe class="w-full aspect-video rounded-xl mb-4" src="https://www.youtube.com/embed/jkIIGw4w9iI?si=nSRs4sXBhH85ecUA" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                            <iframe class="w-full aspect-video rounded-xl mb-4" src="https://www.youtube.com/embed/jkIIGw4w9iI?enablejsapi=1&si=nSRs4sXBhH85ecUA" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
                             <p>When AI Makes Stuff Up</p>
                         </div>
                         <div class="video-card" id="hallucination-video-2">
                             <h4>▶️ Rihal's Take</h4>
-                            <iframe class="w-full aspect-video rounded-xl mb-4" src="https://www.youtube.com/embed/ftIE__c0UK4?si=Og9k8w_ykEWUhmgO" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                            <iframe class="w-full aspect-video rounded-xl mb-4" src="https://www.youtube.com/embed/ftIE__c0UK4?enablejsapi=1&si=Og9k8w_ykEWUhmgO" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
                             <p>Trust but Check: Fact-Checking AI</p>
                         </div>
                         <div class="video-card" id="hallucination-video-3">
                             <h4>▶️ Noah's Take</h4>
-                            <iframe class="w-full aspect-video rounded-xl mb-4" src="https://www.youtube.com/embed/0ugCxxNE_YM?si=FRHDFkLb8WtOcSgb" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                            <iframe class="w-full aspect-video rounded-xl mb-4" src="https://www.youtube.com/embed/0ugCxxNE_YM?enablejsapi=1&si=FRHDFkLb8WtOcSgb" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
                             <p>Spotting AI’s Sneaky Mistakes</p>
                         </div>
                     </div>
@@ -3115,17 +3124,17 @@
                     <div class="video-section">
                         <div class="video-card" id="bias-video-1">
                             <h4>▶️ Aanya's Take</h4>
-                            <iframe class="w-full aspect-video rounded-xl mb-4" src="https://www.youtube.com/embed/wwtyovlygds?si=6lTrxWdE2E8fy6Aw  " title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                            <iframe class="w-full aspect-video rounded-xl mb-4" src="https://www.youtube.com/embed/wwtyovlygds?enablejsapi=1&si=6lTrxWdE2E8fy6Aw  " title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
                             <p>Is your AI Being Fair?</p>
                         </div>
                         <div class="video-card" id="bias-video-2">
                             <h4>▶️ Rihal's Take</h4>
-                            <iframe class="w-full aspect-video rounded-xl mb-4" src="https://www.youtube.com/embed/tcFABun9BCE?si=knx7UqZCmubJjatM" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                            <iframe class="w-full aspect-video rounded-xl mb-4" src="https://www.youtube.com/embed/tcFABun9BCE?enablejsapi=1&si=knx7UqZCmubJjatM" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
                             <p>AI, Kindness, and Fair Play</p>
                         </div>
                         <div class="video-card" id="bias-video-3">
                             <h4>▶️ Noah's Take</h4>
-                            <iframe class="w-full aspect-video rounded-xl mb-4" src="https://www.youtube.com/embed/K_8doRi2BMA?si=GEhn4c-OCJQx6kyR" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                            <iframe class="w-full aspect-video rounded-xl mb-4" src="https://www.youtube.com/embed/K_8doRi2BMA?enablejsapi=1&si=GEhn4c-OCJQx6kyR" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
                             <p>Does This AI Answer Feel Biased?</p>
                         </div>
                     </div>
@@ -3135,17 +3144,17 @@
                     <div class="video-section">
                         <div class="video-card" id="bad-habits-video-1">
                             <h4>▶️ Aanya's Take</h4>
-                            <iframe class="w-full aspect-video rounded-xl mb-4" src="https://www.youtube.com/embed/IBIvXeD6dU0?si=lOug2IL5FNeaKPL4" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                            <iframe class="w-full aspect-video rounded-xl mb-4" src="https://www.youtube.com/embed/IBIvXeD6dU0?enablejsapi=1&si=lOug2IL5FNeaKPL4" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
                             <p>Can AI be Mean Sometimes?</p>
                         </div>
                         <div class="video-card" id="bad-habits-video-2">
                             <h4>▶️ Rihal's Take</h4>
-                            <iframe class="w-full aspect-video rounded-xl mb-4" src="https://www.youtube.com/embed/rDn-P5nSHY8?si=iHqOYxgcuZRdSUuz" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                            <iframe class="w-full aspect-video rounded-xl mb-4" src="https://www.youtube.com/embed/rDn-P5nSHY8?enablejsapi=1&si=iHqOYxgcuZRdSUuz" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
                             <p>Become an AI Safety Hero</p>
                         </div>
                         <div class="video-card" id="bad-habits-video-3">
                             <h4>▶️ Noah's Take</h4>
-                            <iframe class="w-full aspect-video rounded-xl mb-4" src="https://www.youtube.com/embed/ioNFy16TQRM?si=25uyFAcg6_FQlBiE" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                            <iframe class="w-full aspect-video rounded-xl mb-4" src="https://www.youtube.com/embed/ioNFy16TQRM?enablejsapi=1&si=25uyFAcg6_FQlBiE" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
                             <p>Stop AI from Copying Bad Habits</p>
                         </div>
                     </div>
@@ -3155,17 +3164,17 @@
                     <div class="video-section">
                         <div class="video-card" id="privacy-video-1">
                             <h4>▶️ Aanya's Take</h4>
-                            <iframe class="w-full aspect-video rounded-xl mb-4" src="https://www.youtube.com/embed/2odREouFOqM?si=skRvNzL6hzAd9PSh" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                            <iframe class="w-full aspect-video rounded-xl mb-4" src="https://www.youtube.com/embed/2odREouFOqM?enablejsapi=1&si=skRvNzL6hzAd9PSh" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
                             <p>Keeping Your Secrets Safe from AI</p>
                         </div>
                         <div class="video-card" id="privacy-video-2">
                             <h4>▶️ Rihal's Take</h4>
-                            <iframe class="w-full aspect-video rounded-xl mb-4" src="https://www.youtube.com/embed/1J5fnSbnEQo?si=94bm8ayYo5qi9vWE" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                            <iframe class="w-full aspect-video rounded-xl mb-4" src="https://www.youtube.com/embed/1J5fnSbnEQo?enablejsapi=1&si=94bm8ayYo5qi9vWE" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
                             <p>Don’t Overshare with Chatbots</p>
                         </div>
                         <div class="video-card" id="privacy-video-3">
                             <h4>▶️ Noah's Take</h4>
-                            <iframe class="w-full aspect-video rounded-xl mb-4" src="https://www.youtube.com/embed/nT64Jl8fAFs?si=rBp8FkuwETbREkCt" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                            <iframe class="w-full aspect-video rounded-xl mb-4" src="https://www.youtube.com/embed/nT64Jl8fAFs?enablejsapi=1&si=rBp8FkuwETbREkCt" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
                             <p>Privacy Rules Every AI Should Follow</p>
                         </div>
                     </div>
@@ -3225,15 +3234,23 @@
         function renderQuestion() {
             const questions = quizData[currentTopic];
             const q = questions[currentQuestionIndex];
-            
+
+            // Shuffle option indices using Fisher-Yates
+            const indices = q.options.map((_, i) => i);
+            for (let i = indices.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [indices[i], indices[j]] = [indices[j], indices[i]];
+            }
+            shuffledCorrectIndex = indices.indexOf(q.correct);
+
             return `
                 <div class="question">
                     Question ${currentQuestionIndex + 1} of ${questions.length}: ${q.question}
                 </div>
                 <div class="options" id="options">
-                    ${q.options.map((opt, idx) => `
-                        <div class="option" onclick="selectAnswer(${idx})" data-index="${idx}">
-                            ${opt}
+                    ${indices.map((origIdx, shuffIdx) => `
+                        <div class="option" onclick="selectAnswer(${shuffIdx})" data-index="${shuffIdx}">
+                            ${q.options[origIdx]}
                         </div>
                     `).join('')}
                 </div>
@@ -3269,14 +3286,14 @@
             options.forEach(opt => {
                 opt.style.pointerEvents = 'none';
                 const idx = parseInt(opt.dataset.index);
-                if (idx === q.correct) {
+                if (idx === shuffledCorrectIndex) {
                     opt.classList.add('correct');
                 } else if (idx === selectedAnswer) {
                     opt.classList.add('incorrect');
                 }
             });
 
-            if (selectedAnswer === q.correct) {
+            if (selectedAnswer === shuffledCorrectIndex) {
                 score++;
                 feedback.className = 'feedback show correct';
                 feedback.textContent = '✅ Awesome! That\'s correct! You\'re learning to be a great AI Glitch Buster!';
@@ -3352,7 +3369,18 @@
             alert('🎮 Game coming soon! Stay tuned for fun interactive games about ' + topic + '!');
         }
 
+        function pauseAllVideos() {
+            document.querySelectorAll('iframe').forEach(function(iframe) {
+                iframe.contentWindow.postMessage(JSON.stringify({
+                    event: 'command',
+                    func: 'pauseVideo',
+                    args: ''
+                }), '*');
+            });
+        }
+
         function hideAllContent() {
+            pauseAllVideos();
             document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
         }
 
@@ -3360,6 +3388,25 @@
             hideAllContent();
             document.getElementById('home').classList.add('active');
         }
+
+        // Pause other YouTube videos when one starts playing
+        window.addEventListener('message', function(event) {
+            if (event.origin !== 'https://www.youtube.com') return;
+            try {
+                const data = JSON.parse(event.data);
+                if (data.event === 'onStateChange' && data.info === 1) {
+                    document.querySelectorAll('iframe').forEach(function(iframe) {
+                        if (iframe.contentWindow !== event.source) {
+                            iframe.contentWindow.postMessage(JSON.stringify({
+                                event: 'command',
+                                func: 'pauseVideo',
+                                args: ''
+                            }), '*');
+                        }
+                    });
+                }
+            } catch (e) {}
+        });
     </script>
 </body>
 </html>
